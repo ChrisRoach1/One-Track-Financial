@@ -18,7 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $uncategorizedTransactions = auth()->user()->transactions()->with('linkedAccount')->where('category_id', null)->get();
         $categories = Category::query()->get();
         $categorizedTransactions = auth()->user()->transactions()->with('linkedAccount')->with('category')->whereNot('category_id', null)->get();
-
+        $hasLinkedAccounts = auth()->user()->linkedAccounts()->count() > 0;
 
         $categoryWithAmount = auth()->user()->transactions()->join('categories', 'categories.id',  '=', 'transactions.category_id')->whereNot('category_id', null)
             ->select('categories.name as category', DB::raw('sum(amount) as amount'))
@@ -56,6 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'weekCost' => currency_format((float)$weekCost),
             'monthCost' => currency_format((float)$monthCost),
             'categoryWithAmount' => $categoryWithAmount,
+            'hasLinkedAccounts' => $hasLinkedAccounts
         ]);
     })->name('dashboard');
 

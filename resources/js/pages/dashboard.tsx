@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { Category, Transaction, type BreadcrumbItem } from '@/types';
 
-import { Head, router } from '@inertiajs/react';
+import { Head, router, Link } from '@inertiajs/react';
 import { TransactionCategorizationModal } from '@/components/transaction-categorization-modal';
 import { Button } from '@/components/ui/button';
 import axios from 'axios';
@@ -28,7 +27,9 @@ import {
     PartyPopper,
     Receipt,
     Stethoscope,
-    MoreHorizontal
+    MoreHorizontal,
+    RefreshCw,
+    Link as LinkIcon
 } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
@@ -77,7 +78,8 @@ interface props{
     todayCost: string;
     weekCost: string;
     monthCost: string;
-    categoryWithAmount: CategoryWithAmount[]
+    categoryWithAmount: CategoryWithAmount[];
+    hasLinkedAccounts: boolean;
 }
 
 interface CategoryWithAmount{
@@ -164,7 +166,7 @@ const getCategoryIcon = (categoryName: string) => {
     }
 };
 
-export default function Dashboard({uncategorizedTransactions, categories, categorizedTransactions, todayCost, weekCost, monthCost, categoryWithAmount} : props) {
+export default function Dashboard({uncategorizedTransactions, categories, categorizedTransactions, todayCost, weekCost, monthCost, categoryWithAmount, hasLinkedAccounts} : props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     console.log(categoryWithAmount)
     function onclose(){
@@ -179,8 +181,27 @@ export default function Dashboard({uncategorizedTransactions, categories, catego
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            {(uncategorizedTransactions !== null && uncategorizedTransactions.length > 0) ? <Button variant={'default'} className='m-5' onClick={() => setIsModalOpen(true)}>View {uncategorizedTransactions.length} New Transactions</Button> : <></>}
-            <Button className='m-5' onClick={() => router.get(route('transactions.store'))}>Sync</Button>
+            <div className="flex items-center gap-4 m-5">
+                {(uncategorizedTransactions !== null && uncategorizedTransactions.length > 0) ? 
+                <Button variant={'default'} onClick={() => setIsModalOpen(true)}>View {uncategorizedTransactions.length} New Transactions</Button> 
+                : <></>}
+                
+                {hasLinkedAccounts ? (
+                    <Button className="flex items-center gap-2" onClick={() => router.get(route('transactions.store'))}>
+                        <RefreshCw className="w-4 h-4" />
+                        Sync Transactions
+                    </Button>
+                ) : (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <LinkIcon className="w-4 h-4" />
+                        <span>No accounts linked. </span>
+                        <Link href={route('linkedAccount.edit')} className="text-primary hover:underline">
+                            Link your accounts
+                        </Link>
+                        <span> to start tracking transactions.</span>
+                    </div>
+                )}
+            </div>
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                     <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
