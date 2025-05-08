@@ -54,6 +54,9 @@ export interface LinkedAccount{
 export interface Category{
     id: number;
     name: string;
+    user_id: number;
+    is_custom: boolean;
+    icon_name: string;
 }
 
 

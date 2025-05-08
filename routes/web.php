@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TransactionController;
 use App\Models\Category;
 use Carbon\Carbon;
@@ -16,7 +17,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         $uncategorizedTransactions = auth()->user()->transactions()->with('linkedAccount')->where('category_id', null)->get();
-        $categories = Category::query()->get();
+        $categories = Category::query()->where('categories.user_id', auth()->id())->orWhere('categories.user_id', null)->get();
         $categorizedTransactions = auth()->user()->transactions()->with('linkedAccount')->with('category')->whereNot('category_id', null)->get();
         $hasLinkedAccounts = auth()->user()->linkedAccounts()->count() > 0;
 
@@ -62,6 +63,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('transactions', [TransactionController::class, 'store'])->name('transactions.store');
     Route::post('transactions', [TransactionController::class, 'update'])->name('transactions.update');
+
+    Route::get('custom-categories', [CategoryController::class, 'view'])->name('category.view');;
+    Route::post('category', [CategoryController::class, 'store'])->name('category.store');
 
 });
 

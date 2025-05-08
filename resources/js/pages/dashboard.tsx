@@ -181,11 +181,11 @@ export default function Dashboard({uncategorizedTransactions, categories, catego
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex items-center gap-4 m-5">
-                {(uncategorizedTransactions !== null && uncategorizedTransactions.length > 0) ? 
-                <Button variant={'default'} onClick={() => setIsModalOpen(true)}>View {uncategorizedTransactions.length} New Transactions</Button> 
+            <div className="flex items-center gap-4 m-3">
+                {(uncategorizedTransactions !== null && uncategorizedTransactions.length > 0) ?
+                <Button variant={'default'} onClick={() => setIsModalOpen(true)}>View {uncategorizedTransactions.length} New Transactions</Button>
                 : <></>}
-                
+
                 {hasLinkedAccounts ? (
                     <Button className="flex items-center gap-2" onClick={() => router.get(route('transactions.store'))}>
                         <RefreshCw className="w-4 h-4" />
@@ -202,7 +202,7 @@ export default function Dashboard({uncategorizedTransactions, categories, catego
                     </div>
                 )}
             </div>
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-3 m-3 bg-card">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                     <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
                         <div className="flex h-full flex-col items-center justify-center p-4">

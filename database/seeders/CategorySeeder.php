@@ -19,27 +19,34 @@ class CategorySeeder extends Seeder
         ]);
 
         Category::factory()->create([
-            'name' => 'Shopping'
+            'name' => 'Shopping',
+            'user_id' => null,
         ]);
 
         Category::factory()->create([
-            'name' => 'Transportation'
+            'name' => 'Transportation',
+            'user_id' => null,
         ]);
 
         Category::factory()->create([
-            'name' => 'Entertainment'
+            'name' => 'Entertainment',
+            'user_id' => null,
         ]);
 
         Category::factory()->create([
-            'name' => 'Bills & Utilities'
+            'name' => 'Bills & Utilities',
+            'user_id' => null,
         ]);
 
         Category::factory()->create([
-            'name' => 'Healthcare'
+            'name' => 'Healthcare',
+            'user_id' => null,
         ]);
 
         Category::factory()->create([
-            'name' => 'Other'
+            'name' => 'Other',
+            'user_id' => null,
+
         ]);
     }
 }
