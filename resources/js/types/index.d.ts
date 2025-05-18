@@ -1,6 +1,5 @@
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
-import { ColumnDef } from "@tanstack/react-table"
 
 export interface Auth {
     user: User;

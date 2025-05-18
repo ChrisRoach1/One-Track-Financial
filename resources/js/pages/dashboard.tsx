@@ -1,25 +1,11 @@
 import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { Category, Transaction, type BreadcrumbItem } from '@/types';
-
 import { Head, router, Link } from '@inertiajs/react';
 import { TransactionCategorizationModal } from '@/components/transaction-categorization-modal';
 import { Button } from '@/components/ui/button';
 import axios from 'axios';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
-  import {
-    ColumnDef,
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
-  } from "@tanstack/react-table"
+import { ColumnDef } from "@tanstack/react-table"
 import {
     Utensils,
     ShoppingBag,
@@ -29,13 +15,10 @@ import {
     Stethoscope,
     MoreHorizontal,
     RefreshCw,
-    Link as LinkIcon
+    Link as LinkIcon, Cog,
+    Sparkles
 } from 'lucide-react';
-
-interface DataTableProps<TData, TValue> {
-columns: ColumnDef<TData, TValue>[]
-data: TData[]
-}
+import { DataTable } from '@/components/data-table';
 
 export const gridColumns: ColumnDef<Transaction>[] = [
     {
@@ -87,63 +70,6 @@ interface CategoryWithAmount{
     amount: string;
 }
 
-export function DataTable<TData, TValue>({
-    columns,
-    data,
-  }: DataTableProps<TData, TValue>) {
-    const table = useReactTable({
-      data,
-      columns,
-      getCoreRowModel: getCoreRowModel(),
-    })
-
-    return (
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    )
-  }
 
 const getCategoryIcon = (categoryName: string) => {
     switch(categoryName) {
@@ -162,13 +88,12 @@ const getCategoryIcon = (categoryName: string) => {
         case 'Other':
             return <MoreHorizontal className="w-4 h-4 mr-2" />;
         default:
-            return null;
+            return <Cog className="w-4 h-4 mr-2" />;
     }
 };
 
 export default function Dashboard({uncategorizedTransactions, categories, categorizedTransactions, todayCost, weekCost, monthCost, categoryWithAmount, hasLinkedAccounts} : props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    console.log(categoryWithAmount)
     function onclose(){
         setIsModalOpen(false);
         const updatedTransactions = uncategorizedTransactions.filter(x => x.category_id !== null);
@@ -187,10 +112,16 @@ export default function Dashboard({uncategorizedTransactions, categories, catego
                 : <></>}
 
                 {hasLinkedAccounts ? (
-                    <Button className="flex items-center gap-2" onClick={() => router.get(route('transactions.store'))}>
-                        <RefreshCw className="w-4 h-4" />
-                        Sync Transactions
-                    </Button>
+                    <>
+                        <Button className="flex items-center gap-2" onClick={() => router.get(route('transactions.store'))}>
+                            <RefreshCw className="w-4 h-4" />
+                            Sync Transactions
+                        </Button>
+                        <Button className="flex items-center gap-2" onClick={() => router.post(route('transactions.categorizeWithAI'))}>
+                            <Sparkles className="w-4 h-4" />
+                            Categorize with AI
+                        </Button>
+                    </>
                 ) : (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <LinkIcon className="w-4 h-4" />

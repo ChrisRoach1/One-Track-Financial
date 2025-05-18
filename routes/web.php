@@ -6,7 +6,6 @@ use App\Models\Category;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Torann\Currency\Currency;
 
 
 Route::get('/', function () {
@@ -63,6 +62,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('transactions', [TransactionController::class, 'store'])->name('transactions.store');
     Route::post('transactions', [TransactionController::class, 'update'])->name('transactions.update');
+    Route::post('transactions/categorizeWithAI', [TransactionController::class, 'categorizeWithAI'])->name('transactions.categorizeWithAI');
 
     Route::get('custom-categories', [CategoryController::class, 'view'])->name('category.view');;
     Route::post('category', [CategoryController::class, 'store'])->name('category.store');

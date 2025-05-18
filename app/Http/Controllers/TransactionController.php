@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\LinkedAccount;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class TransactionController extends Controller
 {
@@ -62,6 +64,29 @@ class TransactionController extends Controller
         }
 
         return redirect()->route('dashboard');
+    }
 
+    public function categorizeWithAI(Request $request){
+        $categories = Category::query()->where('categories.user_id', null)->orWhere('categories.user_id', Auth::id())->get();
+        $categoryString = implode(',', $categories->pluck('name')->toArray());
+        $uncategorizedTransactions = Auth::user()->transactions()->where('category_id', null)->get();
+
+        foreach ($uncategorizedTransactions as $transaction) {
+            $message = "I have a transaction for " . $transaction->amount . " " . $transaction->currency . " from " . $transaction->date . " to " . $transaction->merchant_name . ".";
+            $message .= " I have the following categories: " . $categoryString . ". Which one best describes this transaction? Only respond with your choice in the exact same way it was presented to you. Nothing else.";
+            $result = OpenAI::chat()->create([
+                'model' => 'gpt-4o-mini',
+                'messages' => [
+                    ['role' => 'user', 'content' => $message],
+                ],
+            ]);
+            
+            $categoryChoice = $result->choices[0]->message->content;
+
+            $categoryId = $categories->where('name', $categoryChoice)->first()->id;
+            if($categoryId != null){
+                Transaction::where('id', $transaction->id)->update(['category_id' => $categoryId]);
+            }
+        }
     }
 }

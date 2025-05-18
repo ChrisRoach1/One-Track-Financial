@@ -10,18 +10,9 @@ import {
     PartyPopper,
     Receipt,
     Stethoscope,
-    MoreHorizontal
+    MoreHorizontal, Cog
 } from 'lucide-react';
 
-export enum Categories{
-    'Food & Dining' = 1,
-    'Shopping',
-    'Transportation',
-    'Entertainment',
-    'Bills & Utilities',
-    'Healthcare',
-    'Other'
-}
 interface TransactionCategorizationModalProps {
     transactions: Transaction[];
     isOpen: boolean;
@@ -49,6 +40,27 @@ export function TransactionCategorizationModal({ transactions, isOpen, onClose, 
         }
     };
 
+    const getIcon = (categoryName: string) => {
+        switch(categoryName) {
+            case 'Food & Dining':
+                return <Utensils className="w-4 h-4 mr-2" />;
+            case 'Shopping':
+                return <ShoppingBag className="w-4 h-4 mr-2" />;
+            case 'Transportation':
+                return <Car className="w-4 h-4 mr-2" />;
+            case 'Entertainment':
+                return <PartyPopper className="w-4 h-4 mr-2" />;
+            case 'Bills & Utilities':
+                return <Receipt className="w-4 h-4 mr-2" />;
+            case 'Healthcare':
+                return <Stethoscope className="w-4 h-4 mr-2" />;
+            case 'Other':
+                return <MoreHorizontal className="w-4 h-4 mr-2" />;
+            default:
+                return <Cog className="w-4 h-4 mr-2" />;
+        }
+    };
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[425px]">
@@ -71,35 +83,14 @@ export function TransactionCategorizationModal({ transactions, isOpen, onClose, 
                         {
                          categories.map((category) => {
                             const categoryName = category.name;
-                            const getIcon = () => {
-                                switch(categoryName) {
-                                    case 'Food & Dining':
-                                        return <Utensils className="w-4 h-4 mr-2" />;
-                                    case 'Shopping':
-                                        return <ShoppingBag className="w-4 h-4 mr-2" />;
-                                    case 'Transportation':
-                                        return <Car className="w-4 h-4 mr-2" />;
-                                    case 'Entertainment':
-                                        return <PartyPopper className="w-4 h-4 mr-2" />;
-                                    case 'Bills & Utilities':
-                                        return <Receipt className="w-4 h-4 mr-2" />;
-                                    case 'Healthcare':
-                                        return <Stethoscope className="w-4 h-4 mr-2" />;
-                                    case 'Other':
-                                        return <MoreHorizontal className="w-4 h-4 mr-2" />;
-                                    default:
-                                        return null;
-                                }
-                            };
-
                             return (
                                 <Button
-                                    key={Number(category)}
+                                    key={category.id}
                                     variant="outline"
                                     onClick={() => handleCategorySelect(category.id)}
                                     className="h-auto py-2 flex items-center justify-center"
                                 >
-                                    {getIcon()}
+                                    {getIcon(categoryName)}
                                     {categoryName}
                                 </Button>
                             )
