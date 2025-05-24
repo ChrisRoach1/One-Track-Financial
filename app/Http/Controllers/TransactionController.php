@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TransactionsExport;
 use App\Models\Category;
 use App\Models\LinkedAccount;
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -12,12 +14,41 @@ use OpenAI\Laravel\Facades\OpenAI;
 
 class TransactionController extends Controller
 {
+
     /**
-     * sync transactions for each linked account.
+     * store manually entered transaction.
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'merchant' => ['required', 'string', 'max:255'],
+            'amount' => ['required', 'numeric', 'min:0.01'],
+            'date' => ['required', 'date'],
+            'category_id' => ['required', 'integer', 'exists:categories,id'],
+            'linked_account_id' => ['required', 'integer', 'exists:linked_accounts,id']
+        ]);
 
+        Transaction::create([
+           'user_id' => Auth::id(),
+           'amount' => $validated['amount'],
+           'currency' => 'USD',
+           'date' => Carbon::parse($validated['date']),
+            'merchant_name' => $validated['merchant'],
+            'pending' => false,
+            'logo_url' => null,
+            'category_id' => $validated['category_id'],
+            'linked_account_id' => $validated['linked_account_id'],
+            'transaction_id' => 'N/A'
+        ]);
+
+        return redirect()->route('dashboard');
+    }
+
+    /**
+     * sync transactions for each linked account.
+     */
+    public function sync(Request $request)
+    {
         $linkedAccounts = LinkedAccount::where('user_id', Auth::id())->get();
 
         foreach($linkedAccounts as $account){
@@ -55,8 +86,8 @@ class TransactionController extends Controller
     /**
      * update transactions to set category.
      */
-    public function update(Request $request){
-
+    public function update(Request $request)
+    {
         $updatedTransactions = $request['updatedTransactions'];
 
         foreach($updatedTransactions as $updatedTransaction) {
@@ -66,7 +97,8 @@ class TransactionController extends Controller
         return redirect()->route('dashboard');
     }
 
-    public function categorizeWithAI(Request $request){
+    public function categorizeWithAI(Request $request)
+    {
         $categories = Category::query()->where('categories.user_id', null)->orWhere('categories.user_id', Auth::id())->get();
         $categoryString = implode(',', $categories->pluck('name')->toArray());
         $uncategorizedTransactions = Auth::user()->transactions()->where('category_id', null)->get();
@@ -88,5 +120,14 @@ class TransactionController extends Controller
                 Transaction::where('id', $transaction->id)->update(['category_id' => $categoryId]);
             }
         }
+    }
+
+    public function downloadExcel(Request $request)
+    {
+        $month = $request->input('month', Carbon::now()->month - 1);
+        $year = $request->input('year', Carbon::now()->year);
+        $startDate = Carbon::create($year, $month + 1, 1)->startOfMonth();
+        $endDate = Carbon::create($year, $month + 1, 1)->endOfMonth();
+        return (new TransactionsExport($startDate, $endDate))->download('transactions.xlsx');
     }
 }

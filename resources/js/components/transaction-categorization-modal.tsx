@@ -3,15 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Category, Transaction } from '@/types';
-import {
-    Utensils,
-    ShoppingBag,
-    Car,
-    PartyPopper,
-    Receipt,
-    Stethoscope,
-    MoreHorizontal, Cog
-} from 'lucide-react';
+import { getCategoryIcon } from './ui/category-icons';
 
 interface TransactionCategorizationModalProps {
     transactions: Transaction[];
@@ -19,6 +11,8 @@ interface TransactionCategorizationModalProps {
     onClose: () => void;
     categories: Category[];
 }
+
+
 
 export function TransactionCategorizationModal({ transactions, isOpen, onClose, categories }: TransactionCategorizationModalProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -37,27 +31,6 @@ export function TransactionCategorizationModal({ transactions, isOpen, onClose, 
             setCurrentIndex(0);
         } else {
             setCurrentIndex(prev => prev + 1);
-        }
-    };
-
-    const getIcon = (categoryName: string) => {
-        switch(categoryName) {
-            case 'Food & Dining':
-                return <Utensils className="w-4 h-4 mr-2" />;
-            case 'Shopping':
-                return <ShoppingBag className="w-4 h-4 mr-2" />;
-            case 'Transportation':
-                return <Car className="w-4 h-4 mr-2" />;
-            case 'Entertainment':
-                return <PartyPopper className="w-4 h-4 mr-2" />;
-            case 'Bills & Utilities':
-                return <Receipt className="w-4 h-4 mr-2" />;
-            case 'Healthcare':
-                return <Stethoscope className="w-4 h-4 mr-2" />;
-            case 'Other':
-                return <MoreHorizontal className="w-4 h-4 mr-2" />;
-            default:
-                return <Cog className="w-4 h-4 mr-2" />;
         }
     };
 
@@ -90,7 +63,7 @@ export function TransactionCategorizationModal({ transactions, isOpen, onClose, 
                                     onClick={() => handleCategorySelect(category.id)}
                                     className="h-auto py-2 flex items-center justify-center"
                                 >
-                                    {getIcon(categoryName)}
+                                    {getCategoryIcon(categoryName)}
                                     {categoryName}
                                 </Button>
                             )

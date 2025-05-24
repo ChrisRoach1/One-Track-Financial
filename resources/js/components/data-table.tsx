@@ -19,13 +19,16 @@ import {
 import { useState } from "react"
 import { Input } from "./ui/input"
 import { DataTablePagination } from "./data-table-pagination"
+import { Button } from "./ui/button"
+import {Plus} from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  addCallback: () => void
 }
 
-export function DataTable<TData, TValue>({columns,data}: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({columns,data, addCallback}: DataTableProps<TData, TValue>) {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
   const table = useReactTable({
@@ -42,7 +45,7 @@ export function DataTable<TData, TValue>({columns,data}: DataTableProps<TData, T
 
   return (
     <div className="p-2">
-      <div className="p-2 flex items-center py-4">
+      <div className="p-2 flex items-center justify-between py-4">
         <Input
           placeholder="Filter merchants..."
           value={(table.getColumn("merchant_name")?.getFilterValue() as string) ?? ""}
@@ -51,6 +54,9 @@ export function DataTable<TData, TValue>({columns,data}: DataTableProps<TData, T
           }
           className="max-w-sm"
         />
+        <Button onClick={addCallback} variant={"secondary"}>
+            <Plus/>
+        </Button>
       </div>
       <div className="rounded-md border">
       <Table>

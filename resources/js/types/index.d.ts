@@ -75,5 +75,3 @@ export interface Transaction{
     update_date: Date;
     category: Category;
 }
-
-
