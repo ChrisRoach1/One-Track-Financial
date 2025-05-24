@@ -9,7 +9,7 @@ import { Category, LinkedAccount, Transaction, type BreadcrumbItem } from '@/typ
 import { Head, Link, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import axios from 'axios';
-import { Download, Link as LinkIcon, RefreshCw, Sparkles } from 'lucide-react';
+import { Calendar, DollarSign, Download, Link as LinkIcon, RefreshCw, Sparkles, TrendingDown, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 
 export const gridColumns: ColumnDef<Transaction>[] = [
@@ -154,108 +154,169 @@ export default function Dashboard({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="m-3 flex items-center gap-4">
-                {uncategorizedTransactions !== null && uncategorizedTransactions.length > 0 ? (
-                    <Button variant={'default'} onClick={() => setIsCategoryModalOpen(true)}>
-                        View {uncategorizedTransactions.length} New Transactions
-                    </Button>
-                ) : (
-                    <></>
-                )}
 
-                {hasLinkedAccounts ? (
-                    <>
-                        <Button className="flex items-center gap-2" onClick={() => router.get(route('transactions.sync'))}>
-                            <RefreshCw className="h-4 w-4" />
-                            Sync Transactions
+            {/* Header Section */}
+            <div className='p-4 space-y-5'>
+                {/* Page Header */}
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">Financial Dashboard</h1>
+                        <p className="text-muted-foreground mt-2">Track your spending and manage your transactions</p>
+                    </div>
+
+                    {/* Time Period Controls */}
+                    <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex items-center gap-2">
+                            <Calendar className="text-muted-foreground h-4 w-4" />
+                            <Select value={currentMonth} onValueChange={handleMonthChange}>
+                                <SelectTrigger className="w-[140px]">
+                                    <SelectValue placeholder="Month" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {months.map((month) => (
+                                        <SelectItem key={month.value} value={month.value}>
+                                            {month.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Select value={currentYear} onValueChange={handleYearChange}>
+                                <SelectTrigger className="w-[100px]">
+                                    <SelectValue placeholder="Year" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {years.map((year) => (
+                                        <SelectItem key={year.value} value={year.value}>
+                                            {year.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <Button variant="outline" onClick={downloadExcel} className="flex items-center gap-2">
+                            <Download className="h-4 w-4" />
+                            Export
                         </Button>
-                        <Button className="flex items-center gap-2" onClick={() => router.post(route('transactions.categorizeWithAI'))}>
-                            <Sparkles className="h-4 w-4" />
-                            Categorize with AI
-                        </Button>
-                    </>
-                ) : (
-                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
-                        <LinkIcon className="h-4 w-4" />
-                        <span>No accounts linked. </span>
-                        <Link href={route('linkedAccount.edit')} className="text-primary hover:underline">
-                            Link your accounts
-                        </Link>
-                        <span> to start tracking transactions.</span>
-                    </div>
-                )}
-            </div>
-            <div className="bg-card m-3 flex h-full flex-1 flex-col gap-4 rounded-xl p-3 shadow-sm">
-                <div className="mb-2 flex flex-wrap items-center gap-4">
-                    <div className="flex gap-4">
-                        <Select value={currentMonth} onValueChange={handleMonthChange}>
-                            <SelectTrigger className="md:w-[180px]">
-                                <SelectValue placeholder="Select month" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {months.map((month) => (
-                                    <SelectItem key={month.value} value={month.value}>
-                                        {month.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <Select value={currentYear} onValueChange={handleYearChange}>
-                            <SelectTrigger className="md:w-[180px]">
-                                <SelectValue placeholder="Select year" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {years.map((year) => (
-                                    <SelectItem key={year.value} value={year.value}>
-                                        {year.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <Button variant="outline" onClick={downloadExcel} className="flex items-center gap-2 whitespace-nowrap">
-                        <Download className="h-4 w-4" />
-                        Export to Excel
-                    </Button>
-                </div>
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <div className="flex h-full flex-col items-center justify-center p-4">
-                            <h1 className="text-muted-foreground text-lg font-medium">Today</h1>
-                            <p className="mt-2 text-3xl font-bold">{todayCost}</p>
-                        </div>
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <div className="flex h-full flex-col items-center justify-center p-4">
-                            <h1 className="text-muted-foreground text-lg font-medium">This Week</h1>
-                            <p className="mt-2 text-3xl font-bold">{weekCost}</p>
-                        </div>
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <div className="flex h-full flex-col items-center justify-center p-4">
-                            <h1 className="text-muted-foreground text-lg font-medium">This Month</h1>
-                            <p className="mt-2 text-3xl font-bold">{monthCost}</p>
-                        </div>
                     </div>
                 </div>
-                <div className="grid auto-rows-min grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
-                    {categoryWithAmount.map((category) => (
-                        <div
-                            key={category.category}
-                            className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-[4/3] overflow-hidden rounded-xl border"
+
+                {/* Action Bar */}
+                <div className="flex flex-wrap items-center gap-3">
+                    {uncategorizedTransactions !== null && uncategorizedTransactions.length > 0 && (
+                        <Button
+                            onClick={() => setIsCategoryModalOpen(true)}
+                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
                         >
-                            <div className="flex h-full flex-col items-center justify-center p-2 sm:p-4">
-                                <div className="flex items-center">
-                                    {getCategoryIcon(category.category)}
-                                    <h1 className="text-muted-foreground text-xs font-medium sm:text-sm">{category.category}</h1>
-                                </div>
-                                <p className="mt-1 text-lg font-bold sm:mt-2 sm:text-xl">{category.amount}</p>
+                            <TrendingUp className="mr-2 h-4 w-4" />
+                            {uncategorizedTransactions.length} New Transaction{uncategorizedTransactions.length !== 1 ? 's' : ''}
+                        </Button>
+                    )}
+
+                    {hasLinkedAccounts ? (
+                        <>
+                            <Button variant="outline" onClick={() => router.get(route('transactions.sync'))}>
+                                <RefreshCw className="mr-2 h-4 w-4" />
+                                Sync Transactions
+                            </Button>
+                            <Button variant="outline" onClick={() => router.post(route('transactions.categorizeWithAI'))}>
+                                <Sparkles className="mr-2 h-4 w-4" />
+                                Categorize with AI
+                            </Button>
+                        </>
+                    ) : (
+                        <div className="bg-muted/50 flex items-center gap-3 rounded-lg p-4">
+                            <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-full">
+                                <LinkIcon className="h-5 w-5" />
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium">No accounts linked</p>
+                                <p className="text-muted-foreground text-xs">
+                                    <Link href={route('linkedAccount.edit')} className="text-primary hover:underline">
+                                        Connect your accounts
+                                    </Link>{' '}
+                                    to start tracking transactions automatically.
+                                </p>
                             </div>
                         </div>
-                    ))}
+                    )}
                 </div>
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <DataTable columns={gridColumns} data={categorizedTransactions} addCallback={() => setIsAddModalOpen(true)} />
+
+                {/* Summary Cards */}
+                <div className="grid gap-6 md:grid-cols-3">
+                    <div className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 p-6 dark:border-blue-800 dark:from-blue-950/50 dark:to-blue-900/50">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Today</p>
+                                <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{todayCost}</p>
+                            </div>
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                                <DollarSign className="h-6 w-6" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="rounded-xl border border-green-200 bg-gradient-to-br from-green-50 to-green-100 p-6 dark:border-green-800 dark:from-green-950/50 dark:to-green-900/50">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-green-600 dark:text-green-400">This Week</p>
+                                <p className="text-2xl font-bold text-green-900 dark:text-green-100">{weekCost}</p>
+                            </div>
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-600 dark:text-green-400">
+                                <TrendingDown className="h-6 w-6" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="rounded-xl border border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100 p-6 dark:border-purple-800 dark:from-purple-950/50 dark:to-purple-900/50">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-purple-600 dark:text-purple-400">This Month</p>
+                                <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{monthCost}</p>
+                            </div>
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                                <Calendar className="h-6 w-6" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Category Breakdown */}
+                {categoryWithAmount.length > 0 && (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-xl font-semibold">Spending by Category</h2>
+                            <p className="text-muted-foreground text-sm">{categoryWithAmount.length} categories</p>
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+                            {categoryWithAmount.map((category) => (
+                                <div
+                                    key={category.category}
+                                    className="bg-card hover:bg-accent/50 group relative overflow-hidden rounded-lg border p-4 transition-colors"
+                                >
+                                    <div className="flex flex-col items-center space-y-3 text-center">
+                                        <div className="text-muted-foreground group-hover:text-foreground flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition-colors dark:bg-gray-800">
+                                            {getCategoryIcon(category.category)}
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-muted-foreground text-xs font-medium">{category.category}</p>
+                                            <p className="text-lg font-bold">{category.amount}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Transactions Table */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-semibold">Recent Transactions</h2>
+                        <p className="text-muted-foreground text-sm">{categorizedTransactions.length} transactions</p>
+                    </div>
+                    <div className="bg-card overflow-hidden rounded-xl border shadow-sm">
+                        <DataTable columns={gridColumns} data={categorizedTransactions} addCallback={() => setIsAddModalOpen(true)} />
+                    </div>
                 </div>
             </div>
 
