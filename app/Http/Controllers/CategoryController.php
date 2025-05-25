@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccessToken;
+use App\Models\Budget;
 use App\Models\Category;
-use App\Models\LinkedAccount;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -43,19 +44,19 @@ class CategoryController extends Controller
     }
 
     /**
-     * Edit a linked category.
-     */
-    public function edit(Request $request) : Response
-    {
-
-    }
-
-    /**
      * delete a custom category.
      */
     public function destroy(int $id)
     {
+        $customCategory = Auth::user()->customCategories()->with('transactions')->where('id',$id);
+        
+        if($customCategory) {
+            Transaction::where('category_id', $id)->update(['category_id' => null]);
+            Budget::where('category_id', $id)->delete();
+            $customCategory->delete();
+        }
 
+        return redirect()->route('category.view');
     }
 
 }

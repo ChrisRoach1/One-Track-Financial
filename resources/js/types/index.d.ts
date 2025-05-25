@@ -58,6 +58,13 @@ export interface Category{
     icon_name: string;
 }
 
+export interface Budget{
+    id: number;
+    user_id: number;
+    category_id: number;
+    max_amount: number;
+    category: Category;
+}
 
 export interface Transaction{
     id: number;

@@ -61,7 +61,7 @@ export function TransactionCategorizationModal({ transactions, isOpen, onClose, 
                                     key={category.id}
                                     variant="outline"
                                     onClick={() => handleCategorySelect(category.id)}
-                                    className="h-auto py-2 flex items-center justify-center"
+                                    className="h-auto py-2 flex items-center justify-center gap-2"
                                 >
                                     {getCategoryIcon(categoryName)}
                                     {categoryName}

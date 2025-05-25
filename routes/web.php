@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TransactionController;
 use App\Models\Category;
@@ -83,6 +84,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('custom-categories', [CategoryController::class, 'view'])->name('category.view');;
     Route::post('category', [CategoryController::class, 'store'])->name('category.store');
+    Route::delete('category/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
+
+    Route::get('budgets', [BudgetController::class, 'view'])->name('budgets.view');
+    Route::post('budgets', [BudgetController::class, 'store'])->name('budgets.store');
+    Route::delete('budgets/{id}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
+    Route::put('budgets/{id}', [BudgetController::class, 'update'])->name('budgets.update');
 
 });
 
