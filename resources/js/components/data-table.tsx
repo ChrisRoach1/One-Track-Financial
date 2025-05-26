@@ -20,7 +20,7 @@ import { useState } from "react"
 import { Input } from "./ui/input"
 import { DataTablePagination } from "./data-table-pagination"
 import { Button } from "./ui/button"
-import {Plus} from 'lucide-react';
+import {Plus, Building2} from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -81,15 +81,33 @@ export function DataTable<TData, TValue>({columns,data, addCallback}: DataTableP
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                {row.getVisibleCells().map((cell) => {
+                    if(cell.id.includes('url')){
+                        const imageUrl = cell.renderValue() as string | undefined;
+                        return (
+                            <TableCell key={cell.id}>
+                              {imageUrl ? (
+                                <img
+                                  src={imageUrl}
+                                  className="w-8 h-8 rounded-full object-cover"
+                                  alt=""
+                                />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                  <Building2 className="w-4 h-4 text-gray-500" />
+                                </div>
+                              )}
+                          </TableCell>
+                        )
+                    }else{
+                        return (
+                            <TableCell key={cell.id}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        )
+                    }
+                })}
               </TableRow>
             ))
           ) : (

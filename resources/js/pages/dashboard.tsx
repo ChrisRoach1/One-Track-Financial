@@ -14,6 +14,10 @@ import { useState } from 'react';
 
 export const gridColumns: ColumnDef<Transaction>[] = [
     {
+        accessorKey: 'logo_url',
+        header: '',
+    },
+    {
         accessorKey: 'amount',
         header: 'Amount',
     },
@@ -291,8 +295,7 @@ export default function Dashboard({
                             {categoryWithAmount.map((category) => (
                                 <div
                                     key={category.category}
-                                    className="bg-card hover:bg-accent/50 group relative overflow-hidden rounded-lg border p-4 transition-colors"
-                                >
+                                    className="bg-card group relative overflow-hidden rounded-lg border p-4 transition-colors">
                                     <div className="flex flex-col items-center space-y-3 text-center">
                                         <div className="text-muted-foreground group-hover:text-foreground flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition-colors dark:bg-gray-800">
                                             {getCategoryIcon(category.category)}

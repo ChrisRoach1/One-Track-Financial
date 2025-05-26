@@ -196,9 +196,9 @@ export default function Budgets({ budgets, categories, totalBudgeted, totalSpent
                             {categoriesWithoutBudgets?.map((category) => (
                                 <Card
                                     key={category.id}
-                                    className="p-4">
+                                    className="bg-card group relative overflow-hidden rounded-lg border p-4">
                                     <div className="flex flex-col items-center text-center space-y-2">
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                                        <div className="text-muted-foreground group-hover:text-foreground flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition-colors dark:bg-gray-800">
                                             {getCategoryIcon(category.name)}
                                         </div>
                                         <p className="text-sm font-medium">{category.name}</p>
