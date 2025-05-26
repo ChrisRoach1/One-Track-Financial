@@ -34,7 +34,7 @@ export default function CustomCategory({existingCustomCategories}:props) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('category.store'), {
+        post(route('categories.store'), {
             preserveScroll: true,
         });
         reset('name');
@@ -42,7 +42,7 @@ export default function CustomCategory({existingCustomCategories}:props) {
     };
 
     const destroy = (id: number) =>{
-        router.delete(route('category.destroy', id), {preserveScroll: true});
+        router.delete(route('categories.destroy', id), {preserveScroll: true});
         router.flushAll();
     }
 

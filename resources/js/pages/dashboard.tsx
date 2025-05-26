@@ -309,7 +309,7 @@ export default function Dashboard({
                 )}
 
                 {/* Transactions Table */}
-                <div className="space-y-4">
+                <div className="space-y-4 hidden md:block">
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-semibold">Recent Transactions</h2>
                         <p className="text-muted-foreground text-sm">{categorizedTransactions.length} transactions</p>

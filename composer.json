@@ -12,6 +12,7 @@
         "php": "^8.2",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
+        "laravel/telescope": "^5.7",
         "laravel/tinker": "^2.10.1",
         "maatwebsite/excel": "^3.1",
         "openai-php/laravel": "^0.11.0",
@@ -68,7 +69,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": ["laravel/telescope"]
         }
     },
     "config": {

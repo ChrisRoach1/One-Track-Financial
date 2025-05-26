@@ -40,7 +40,7 @@ class CategoryController extends Controller
             'user_id' => Auth::id()
         ]);
 
-        return redirect()->route('category.view');
+        return redirect()->route('categories.view');
     }
 
     /**
@@ -56,7 +56,7 @@ class CategoryController extends Controller
             $customCategory->delete();
         }
 
-        return redirect()->route('category.view');
+        return redirect()->route('categories.view');
     }
 
 }

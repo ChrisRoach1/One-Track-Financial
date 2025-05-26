@@ -36,7 +36,7 @@ export function TransactionCategorizationModal({ transactions, isOpen, onClose, 
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] sm:m-5">
                 <DialogHeader>
                     <DialogTitle>Categorize Transactions</DialogTitle>
                 </DialogHeader>
