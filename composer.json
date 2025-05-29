@@ -16,8 +16,7 @@
         "laravel/tinker": "^2.10.1",
         "maatwebsite/excel": "^3.1",
         "openai-php/laravel": "^0.11.0",
-        "tightenco/ziggy": "^2.4",
-        "torann/currency": "^1.1"
+        "tightenco/ziggy": "^2.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

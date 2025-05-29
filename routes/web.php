@@ -44,7 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->groupBy('category_id')->get();
 
         foreach ($categoryWithAmount as $category){
-            $category->amount = currency_format((float)$category->amount);
+            $category->amount = "$".$category->amount;
         }
 
         $todayCost = $categorizedTransactions->whereBetween('date',[
@@ -66,9 +66,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'uncategorizedTransactions' => $uncategorizedTransactions,
             'categories' => $categories,
             'categorizedTransactions' => $categorizedTransactions,
-            'todayCost' => currency_format((float)$todayCost),
-            'weekCost' => currency_format((float)$weekCost),
-            'monthCost' => currency_format((float)$monthCost),
+            'todayCost' => "$".$todayCost,
+            'weekCost' => "$".$weekCost,
+            'monthCost' => "$".$monthCost,
             'categoryWithAmount' => $categoryWithAmount,
             'hasLinkedAccounts' => $linkedAccounts->count() > 0,
             'selectedMonth' => (int)$month,

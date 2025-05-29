@@ -40,7 +40,7 @@ export const gridColumns: ColumnDef<Transaction>[] = [
     {
         accessorKey: 'category.name',
         header: 'Category',
-    },
+    }
 ];
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -207,13 +207,19 @@ export default function Dashboard({
                 {/* Action Bar */}
                 <div className="flex flex-wrap items-center gap-3">
                     {uncategorizedTransactions !== null && uncategorizedTransactions.length > 0 && (
+                        <>
                         <Button
                             onClick={() => setIsCategoryModalOpen(true)}
                             className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
                         >
                             <TrendingUp className="mr-2 h-4 w-4" />
                             {uncategorizedTransactions.length} New Transaction{uncategorizedTransactions.length !== 1 ? 's' : ''}
-                        </Button>
+                        </Button>                        
+                        <Button variant="outline" onClick={() => router.post(route('transactions.categorizeWithAI'))}>
+                                <Sparkles className="mr-2 h-4 w-4" />
+                                Categorize with AI
+                            </Button>
+                        </>
                     )}
 
                     {hasLinkedAccounts ? (
@@ -221,10 +227,6 @@ export default function Dashboard({
                             <Button variant="outline" onClick={() => router.get(route('transactions.sync'))}>
                                 <RefreshCw className="mr-2 h-4 w-4" />
                                 Sync Transactions
-                            </Button>
-                            <Button variant="outline" onClick={() => router.post(route('transactions.categorizeWithAI'))}>
-                                <Sparkles className="mr-2 h-4 w-4" />
-                                Categorize with AI
                             </Button>
                         </>
                     ) : (
