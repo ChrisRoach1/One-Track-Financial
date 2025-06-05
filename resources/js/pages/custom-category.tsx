@@ -9,6 +9,7 @@ import InputError from '@/components/input-error';
 import { Label } from '@/components/ui/label';
 import { Transition } from '@headlessui/react';
 import { Cog, Plus, Trash2 } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -110,10 +111,9 @@ export default function CustomCategory({existingCustomCategories}:props) {
 
                         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
                             {existingCustomCategories.map((category) => (
-                                <div
+                                <Card
                                     key={category.id}
-                                    className="bg-card hover:bg-accent/50 group relative overflow-hidden rounded-lg border p-4 transition-colors"
-                                >
+                                    className="bg-card hover:bg-accent/50 group relative overflow-hidden rounded-lg border p-4">
                                     <Button
                                         variant="ghost"
                                         size="sm"
@@ -131,7 +131,7 @@ export default function CustomCategory({existingCustomCategories}:props) {
                                             <p className="text-xs text-muted-foreground">Custom Category</p>
                                         </div>
                                     </div>
-                                </div>
+                                </Card>
                             ))}
                         </div>
                     </div>

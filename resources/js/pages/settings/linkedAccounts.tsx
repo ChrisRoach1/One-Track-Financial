@@ -1,14 +1,10 @@
 import { Head, router } from '@inertiajs/react';
-import { PlusIcon, Trash2Icon } from 'lucide-react';
-
+import { PlusIcon, Trash2Icon, RefreshCwIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import HeadingSmall from '@/components/heading-small';
 import { LinkedAccount, type BreadcrumbItem } from '@/types';
-import {
-    usePlaidLink,
-    PlaidLinkOptions,
-} from 'react-plaid-link';
+import { usePlaidLink, PlaidLinkOptions } from 'react-plaid-link';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { useForm } from '@inertiajs/react';
@@ -42,7 +38,6 @@ export default function LinkedAccountsPage({ linkedAccounts, linkToken }: props)
 
     const config: PlaidLinkOptions = {
         onSuccess: (public_token, metadata) => {
-            // Extract the necessary data from metadata
             const institutionName = metadata.institution?.name || '';
             const accounts = metadata.accounts.map(account => ({
                 name: account.name,
@@ -51,11 +46,13 @@ export default function LinkedAccountsPage({ linkedAccounts, linkToken }: props)
             data.token = public_token;
             data.institution_name = institutionName;
             data.accounts = accounts;
+
+            console.log(data);
             // Submit the form
             post(route('linkedAccount.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    toast.success("Account Linked!");
+                    toast.success("Success!");
                 }
             });
         },
@@ -78,10 +75,16 @@ export default function LinkedAccountsPage({ linkedAccounts, linkToken }: props)
                 <div className="space-y-6">
                     <div className="flex items-center justify-between">
                         <HeadingSmall title="Linked Accounts" description="Update your linked bank accounts" />
-                        <Button variant="default" size="sm" onClick={() => open()}>
-                            <PlusIcon className="size-4" />
-                            Add Account
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button variant="outline" size="sm" onClick={() => open()}>
+                                <RefreshCwIcon className="size-4" />
+                                Reauthenticate accounts
+                            </Button>
+                            <Button variant="default" size="sm" onClick={() => open()}>
+                                <PlusIcon className="size-4" />
+                                Add Account
+                            </Button>
+                        </div>
                     </div>
 
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
@@ -99,6 +102,7 @@ export default function LinkedAccountsPage({ linkedAccounts, linkToken }: props)
                                             router.delete(route('linkedAccount.destroy', account.id), {
                                                 preserveScroll: true,
                                                 onSuccess: () => {
+                                                    router.flushAll();
                                                     toast.success("Account delete!");
                                                 }
                                             });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AccessToken;
 use App\Models\LinkedAccount;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -26,13 +27,20 @@ class LinkedAccountController extends Controller
         $accessToken = $response->json()['access_token'];
 
         foreach ($request['accounts'] as $account) {
-            LinkedAccount::create([
-                'access_token' => $accessToken,
-                'institution_name' => $request['institution_name'],
-                'account_name' => $account['name'],
-                'account_mask' => $account['mask'],
-                'user_id' => Auth::id()
-            ]);
+
+            $existingRecord = LinkedAccount::where(['user_id' => auth()->id(), 'account_name' => $account['name'], 'account_mask' => $account['mask'], 'institution_name' => $request['institution_name']])->first();
+
+            if($existingRecord) {
+                LinkedAccount::find($existingRecord->id)->update(['access_token' => $accessToken]);
+            }else{
+                LinkedAccount::create([
+                    'access_token' => $accessToken,
+                    'institution_name' => $request['institution_name'],
+                    'account_name' => $account['name'],
+                    'account_mask' => $account['mask'],
+                    'user_id' => Auth::id()
+                ]);
+            }
         }
 
         return redirect()->route('linkedAccount.edit');
@@ -68,6 +76,7 @@ class LinkedAccountController extends Controller
     public function destroy(int $id)
     {
         $linkedAccount = Auth::user()->linkedAccounts()->where('id',$id)->delete();
+        Transaction::where('linked_account_id',$id)->delete();
 
         return redirect()->route('linkedAccount.edit');
     }

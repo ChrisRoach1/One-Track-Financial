@@ -50,8 +50,8 @@ class TransactionController extends Controller
     public function sync(Request $request)
     {
         $linkedAccounts = LinkedAccount::where('user_id', Auth::id())->get();
-
         foreach($linkedAccounts as $account){
+
             $transactions = Http::post('https://sandbox.plaid.com/transactions/sync',[
                 'client_id' => env("PLAID_CLIENT_ID"),
                 'secret' => env("PLAID_CLIENT_SECRET"),
@@ -59,6 +59,9 @@ class TransactionController extends Controller
                 'cursor' =>  $account->next_cursor
             ]);
 
+            if($transactions->badRequest()){
+                return redirect()->route('dashboard')->with('error', 'Error occurred please reauthenticate accounts and try again.');
+            }
             foreach ($transactions['added'] as $transaction) {
                 Transaction::create([
                     'user_id' => Auth::id(),
@@ -112,7 +115,7 @@ class TransactionController extends Controller
                     ['role' => 'user', 'content' => $message],
                 ],
             ]);
-            
+
             $categoryChoice = $result->choices[0]->message->content;
 
             $categoryId = $categories->where('name', $categoryChoice)->first()->id;

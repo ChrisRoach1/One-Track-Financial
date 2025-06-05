@@ -27,12 +27,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $uncategorizedTransactions = $allTransactions->where('category_id', null)->values();
         $linkedAccounts = auth()->user()->linkedAccounts()->get();
         $categories = Category::query()->where('categories.user_id', auth()->id())->orWhere('categories.user_id', null)->get();
-        $categorizedTransactions = $allTransactions->where('category_id','!=', null)
+        $categorizedTransactions = $allTransactions->where('category_id', '!=', null)
             ->whereBetween('date', [
                 $startDate->format('Y-m-d'),
                 $endDate->format('Y-m-d')
-            ])
-            ->values();
+            ])->values();
 
 
         $categoryWithAmount = auth()->user()->transactions()->join('categories', 'categories.id',  '=', 'transactions.category_id')->whereNot('category_id', null)
@@ -43,32 +42,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ])
             ->groupBy('category_id')->get();
 
-        foreach ($categoryWithAmount as $category){
-            $category->amount = "$".$category->amount;
+        foreach ($categoryWithAmount as $category) {
+            $category->amount = "$" . $category->amount;
         }
 
-        $todayCost = $categorizedTransactions->whereBetween('date',[
+        $todayCost = $categorizedTransactions->whereBetween('date', [
             Carbon::now()->startOfDay()->format('Y-m-d'),
             Carbon::now()->endOfDay()->format('Y-m-d')
         ])->sum('amount');
 
-        $weekCost = $categorizedTransactions->whereBetween('date',[
+        $weekCost = $categorizedTransactions->whereBetween('date', [
             Carbon::now()->startOfWeek()->format('Y-m-d'),
             Carbon::now()->endOfWeek()->format('Y-m-d')
         ])->sum('amount');
 
-        $monthCost = $categorizedTransactions->whereBetween('date',[
+        $monthCost = $categorizedTransactions->whereBetween('date', [
             $startDate->format('Y-m-d'),
             $endDate->format('Y-m-d')
         ])->sum('amount');
 
-        return Inertia::render('dashboard',[
+        return Inertia::render('dashboard', [
             'uncategorizedTransactions' => $uncategorizedTransactions,
             'categories' => $categories,
             'categorizedTransactions' => $categorizedTransactions,
-            'todayCost' => "$".$todayCost,
-            'weekCost' => "$".$weekCost,
-            'monthCost' => "$".$monthCost,
+            'todayCost' => "$" . $todayCost,
+            'weekCost' => "$" . $weekCost,
+            'monthCost' => "$" . $monthCost,
             'categoryWithAmount' => $categoryWithAmount,
             'hasLinkedAccounts' => $linkedAccounts->count() > 0,
             'selectedMonth' => (int)$month,
@@ -91,10 +90,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('budgets', [BudgetController::class, 'store'])->name('budgets.store');
     Route::delete('budgets/{id}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
     Route::put('budgets/{id}', [BudgetController::class, 'update'])->name('budgets.update');
-
 });
 
 
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';

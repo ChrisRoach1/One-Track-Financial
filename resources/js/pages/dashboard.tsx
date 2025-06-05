@@ -2,6 +2,7 @@ import { AddTransactionModal } from '@/components/add-transaction-modal';
 import { DataTable } from '@/components/data-table';
 import { TransactionCategorizationModal } from '@/components/transaction-categorization-modal';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { getCategoryIcon } from '@/components/ui/category-icons';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
@@ -62,6 +63,12 @@ interface props {
     selectedMonth: number;
     selectedYear: number;
     linkedAccounts: LinkedAccount[];
+    flash: {
+        success?: string;
+        error?: string;
+        warning?: string;
+        info?: string;
+    };
 }
 
 interface CategoryWithAmount {
@@ -81,6 +88,7 @@ export default function Dashboard({
     selectedMonth,
     selectedYear,
     linkedAccounts,
+    flash
 }: props) {
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -204,6 +212,52 @@ export default function Dashboard({
                     </div>
                 </div>
 
+                {/* Flash Messages */}
+                {flash.error && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 dark:bg-red-950/50 dark:border-red-800">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm font-medium text-red-800 dark:text-red-200">{flash.error}</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {flash.success && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4 dark:bg-green-950/50 dark:border-green-800">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm font-medium text-green-800 dark:text-green-200">{flash.success}</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {flash.warning && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4 dark:bg-yellow-950/50 dark:border-yellow-800">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">{flash.warning}</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Action Bar */}
                 <div className="flex flex-wrap items-center gap-3">
                     {uncategorizedTransactions !== null && uncategorizedTransactions.length > 0 && (
@@ -214,7 +268,7 @@ export default function Dashboard({
                         >
                             <TrendingUp className="mr-2 h-4 w-4" />
                             {uncategorizedTransactions.length} New Transaction{uncategorizedTransactions.length !== 1 ? 's' : ''}
-                        </Button>                        
+                        </Button>
                         <Button variant="outline" onClick={() => router.post(route('transactions.categorizeWithAI'))}>
                                 <Sparkles className="mr-2 h-4 w-4" />
                                 Categorize with AI
@@ -295,7 +349,7 @@ export default function Dashboard({
                         </div>
                         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
                             {categoryWithAmount.map((category) => (
-                                <div
+                                <Card
                                     key={category.category}
                                     className="bg-card group relative overflow-hidden rounded-lg border p-4 transition-colors">
                                     <div className="flex flex-col items-center space-y-3 text-center">
@@ -307,7 +361,7 @@ export default function Dashboard({
                                             <p className="text-lg font-bold">{category.amount}</p>
                                         </div>
                                     </div>
-                                </div>
+                                </Card>
                             ))}
                         </div>
                     </div>
