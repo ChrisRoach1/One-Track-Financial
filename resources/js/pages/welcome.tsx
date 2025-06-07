@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge';
 import {
     ChartBarIcon,
     CreditCardIcon,
-    LockIcon,
     ArrowRightIcon,
     BanknoteIcon,
     ChartPieIcon,
@@ -17,7 +16,6 @@ import {
     TrendingUpIcon,
     ShieldCheckIcon,
     ZapIcon,
-    UsersIcon,
     StarIcon,
     PlayIcon,
     ArrowDownIcon
@@ -301,12 +299,6 @@ export default function Welcome() {
                                     </div>
                                     <h3 className="mb-3 text-xl font-semibold">{item.title}</h3>
                                     <p className="text-muted-foreground">{item.description}</p>
-
-                                    {index < 2 && (
-                                        <div className="absolute top-8 left-full hidden w-full lg:block">
-                                            <ArrowRightIcon className="mx-auto h-5 w-5 text-muted-foreground" />
-                                        </div>
-                                    )}
                                 </div>
                             ))}
                         </div>
@@ -340,40 +332,6 @@ export default function Welcome() {
                                     </div>
                                 </Card>
                             ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* Security Section */}
-                <section className="py-24 bg-muted/30">
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <div className="mx-auto max-w-3xl text-center">
-                            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                                <LockIcon className="h-10 w-10 text-primary" />
-                            </div>
-                            <Badge variant="outline" className="mb-4">Security</Badge>
-                            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                                Your data is safer than your own bank
-                            </h2>
-                            <p className="mt-6 text-lg text-muted-foreground">
-                                We use the same 256-bit encryption as major banks, are SOC 2 Type II certified,
-                                and only maintain read-only access to your accounts. Your money never moves through our systems.
-                            </p>
-
-                            <div className="mt-10 grid gap-6 sm:grid-cols-3">
-                                {[
-                                    { icon: ShieldCheckIcon, title: "SOC 2 Certified" },
-                                    { icon: LockIcon, title: "256-bit Encryption" },
-                                    { icon: UsersIcon, title: "Read-Only Access" }
-                                ].map((item, index) => (
-                                    <div key={index} className="flex flex-col items-center">
-                                        <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                                            <item.icon className="h-6 w-6 text-primary" />
-                                        </div>
-                                        <div className="text-sm font-medium">{item.title}</div>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
                     </div>
                 </section>
