@@ -168,20 +168,20 @@ export default function Dashboard({
             <Head title="Dashboard" />
 
             {/* Header Section */}
-            <div className='p-4 space-y-5'>
+            <div className='p-6 space-y-8'>
                 {/* Page Header */}
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Financial Dashboard</h1>
-                        <p className="text-muted-foreground mt-2">Track your spending and manage your transactions</p>
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="space-y-1">
+                        <h1 className="text-4xl font-bold tracking-tight">Dashboard</h1>
+                        <p className="text-muted-foreground text-lg">Track your spending and manage your transactions</p>
                     </div>
 
                     {/* Time Period Controls */}
                     <div className="flex flex-wrap items-center gap-3">
-                        <div className="flex items-center gap-2">
-                            <Calendar className="text-muted-foreground h-4 w-4" />
+                        <div className="flex items-center gap-2 p-1 rounded-lg border bg-card">
+                            <Calendar className="text-muted-foreground h-4 w-4 ml-3" />
                             <Select value={currentMonth} onValueChange={handleMonthChange}>
-                                <SelectTrigger className="w-[140px]">
+                                <SelectTrigger className="w-[140px] border-0 shadow-none">
                                     <SelectValue placeholder="Month" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -193,7 +193,7 @@ export default function Dashboard({
                                 </SelectContent>
                             </Select>
                             <Select value={currentYear} onValueChange={handleYearChange}>
-                                <SelectTrigger className="w-[100px]">
+                                <SelectTrigger className="w-[100px] border-0 shadow-none">
                                     <SelectValue placeholder="Year" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -264,12 +264,12 @@ export default function Dashboard({
                         <>
                         <Button
                             onClick={() => setIsCategoryModalOpen(true)}
-                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                            className="bg-primary hover:bg-primary/90"
                         >
                             <TrendingUp className="mr-2 h-4 w-4" />
                             {uncategorizedTransactions.length} New Transaction{uncategorizedTransactions.length !== 1 ? 's' : ''}
                         </Button>
-                        <Button variant="outline" onClick={() => router.post(route('transactions.categorizeWithAI'))}>
+                        <Button variant="secondary" onClick={() => router.post(route('transactions.categorizeWithAI'))}>
                                 <Sparkles className="mr-2 h-4 w-4" />
                                 Categorize with AI
                             </Button>
@@ -284,81 +284,90 @@ export default function Dashboard({
                             </Button>
                         </>
                     ) : (
-                        <div className="bg-muted/50 flex items-center gap-3 rounded-lg p-4">
-                            <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-full">
-                                <LinkIcon className="h-5 w-5" />
+                        <Card className="p-6">
+                            <div className="flex items-center gap-4">
+                                <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-full">
+                                    <LinkIcon className="h-6 w-6" />
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="font-semibold">No accounts linked</h3>
+                                    <p className="text-muted-foreground text-sm">
+                                        <Link href={route('linkedAccount.edit')} className="text-primary hover:underline font-medium">
+                                            Connect your accounts
+                                        </Link>{' '}
+                                        to start tracking transactions automatically.
+                                    </p>
+                                </div>
+                                <Button asChild>
+                                    <Link href={route('linkedAccount.edit')}>
+                                        Get Started
+                                    </Link>
+                                </Button>
                             </div>
-                            <div className="flex-1">
-                                <p className="text-sm font-medium">No accounts linked</p>
-                                <p className="text-muted-foreground text-xs">
-                                    <Link href={route('linkedAccount.edit')} className="text-primary hover:underline">
-                                        Connect your accounts
-                                    </Link>{' '}
-                                    to start tracking transactions automatically.
-                                </p>
-                            </div>
-                        </div>
+                        </Card>
                     )}
                 </div>
 
                 {/* Summary Cards */}
                 <div className="grid gap-6 md:grid-cols-3">
-                    <div className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 p-6 dark:border-blue-800 dark:from-blue-950/50 dark:to-blue-900/50">
+                    <Card className="p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Today</p>
-                                <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{todayCost}</p>
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium text-muted-foreground">Today's Spending</p>
+                                <p className="text-3xl font-bold">{todayCost}</p>
                             </div>
-                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                                 <DollarSign className="h-6 w-6" />
                             </div>
                         </div>
-                    </div>
+                    </Card>
 
-                    <div className="rounded-xl border border-green-200 bg-gradient-to-br from-green-50 to-green-100 p-6 dark:border-green-800 dark:from-green-950/50 dark:to-green-900/50">
+                    <Card className="p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-green-600 dark:text-green-400">This Week</p>
-                                <p className="text-2xl font-bold text-green-900 dark:text-green-100">{weekCost}</p>
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium text-muted-foreground">This Week</p>
+                                <p className="text-3xl font-bold">{weekCost}</p>
                             </div>
-                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-600 dark:text-green-400">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/50 text-secondary-foreground">
                                 <TrendingDown className="h-6 w-6" />
                             </div>
                         </div>
-                    </div>
+                    </Card>
 
-                    <div className="rounded-xl border border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100 p-6 dark:border-purple-800 dark:from-purple-950/50 dark:to-purple-900/50">
+                    <Card className="p-6 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-purple-600 dark:text-purple-400">This Month</p>
-                                <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{monthCost}</p>
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium text-muted-foreground">This Month</p>
+                                <p className="text-3xl font-bold">{monthCost}</p>
                             </div>
-                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-foreground">
                                 <Calendar className="h-6 w-6" />
                             </div>
                         </div>
-                    </div>
+                    </Card>
                 </div>
 
                 {/* Category Breakdown */}
                 {categoryWithAmount.length > 0 && (
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-semibold">Spending by Category</h2>
-                            <p className="text-muted-foreground text-sm">{categoryWithAmount.length} categories</p>
+                            <div>
+                                <h2 className="text-2xl font-semibold tracking-tight">Spending by Category</h2>
+                                <p className="text-muted-foreground text-sm mt-1">{categoryWithAmount.length} categories this period</p>
+                            </div>
                         </div>
-                        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+                        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
                             {categoryWithAmount.map((category) => (
                                 <Card
                                     key={category.category}
-                                    className="bg-card group relative overflow-hidden rounded-lg border p-4 transition-colors">
-                                    <div className="flex flex-col items-center space-y-3 text-center">
-                                        <div className="text-muted-foreground group-hover:text-foreground flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition-colors dark:bg-gray-800">
+                                    className="group relative overflow-hidden p-6 transition-all hover:shadow-lg hover:scale-105">
+                                    <div className="flex flex-col items-center space-y-4 text-center">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                                             {getCategoryIcon(category.category)}
                                         </div>
                                         <div className="space-y-1">
-                                            <p className="text-muted-foreground text-xs font-medium">{category.category}</p>
-                                            <p className="text-lg font-bold">{category.amount}</p>
+                                            <p className="text-sm font-medium text-foreground">{category.category}</p>
+                                            <p className="text-xl font-bold">{category.amount}</p>
                                         </div>
                                     </div>
                                 </Card>
@@ -368,14 +377,16 @@ export default function Dashboard({
                 )}
 
                 {/* Transactions Table */}
-                <div className="space-y-4 hidden md:block">
+                <div className="space-y-6 hidden md:block">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-semibold">Recent Transactions</h2>
-                        <p className="text-muted-foreground text-sm">{categorizedTransactions.length} transactions</p>
+                        <div>
+                            <h2 className="text-2xl font-semibold tracking-tight">Recent Transactions</h2>
+                            <p className="text-muted-foreground text-sm mt-1">{categorizedTransactions.length} transactions this period</p>
+                        </div>
                     </div>
-                    <div className="bg-card overflow-hidden rounded-xl border shadow-sm">
+                    <Card className="overflow-hidden">
                         <DataTable columns={gridColumns} data={categorizedTransactions} addCallback={() => setIsAddModalOpen(true)} />
-                    </div>
+                    </Card>
                 </div>
             </div>
 
