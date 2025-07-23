@@ -72,7 +72,7 @@ class BudgetController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $budgetToUpdate = Budget::where(['id' => $id, 'user_id' => auth()->id()])->first();
+        $budgetToUpdate = Budget::query()->where(['id' => $id, 'user_id' => auth()->id()])->first();
 
         if($budgetToUpdate) {
             $validated = $request->validate([
@@ -90,7 +90,7 @@ class BudgetController extends Controller
      */
     public function destroy(int $id)
     {
-        $budgetToDelete = Budget::where(['id' => $id, 'user_id' => auth()->id()])->first();
+        $budgetToDelete = Budget::query()->where(['id' => $id, 'user_id' => auth()->id()])->first();
 
         if($budgetToDelete) {
         $budgetToDelete->delete();

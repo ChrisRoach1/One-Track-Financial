@@ -52,7 +52,7 @@ class CategoryController extends Controller
         
         if($customCategory) {
             Transaction::where('category_id', $id)->update(['category_id' => null]);
-            Budget::where('category_id', $id)->delete();
+            Budget::query()->where('category_id', $id)->delete();
             $customCategory->delete();
         }
 

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Category } from '@/types';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { getCategoryIcon } from './ui/category-icons';
 
 interface AddBudgetModalProps {
@@ -32,6 +32,7 @@ export function AddBudgetModal({ isOpen, onClose, categories }: AddBudgetModalPr
             onSuccess: () => {
                 reset();
                 onClose();
+                router.flushAll();
             }
         });
     };

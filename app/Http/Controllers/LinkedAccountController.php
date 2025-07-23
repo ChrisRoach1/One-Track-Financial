@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AccessToken;
 use App\Models\LinkedAccount;
 use App\Models\Transaction;
+use App\Services\LinkedAccountService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -16,7 +17,7 @@ class LinkedAccountController extends Controller
     /**
      * Create a new linked account.
      */
-    public function store(Request $request)
+    public function store(Request $request, LinkedAccountService $service)
     {
         $response = Http::post('https://sandbox.plaid.com/item/public_token/exchange',[
             'client_id' => env("PLAID_CLIENT_ID"),
@@ -27,20 +28,7 @@ class LinkedAccountController extends Controller
         $accessToken = $response->json()['access_token'];
 
         foreach ($request['accounts'] as $account) {
-
-            $existingRecord = LinkedAccount::where(['user_id' => auth()->id(), 'account_name' => $account['name'], 'account_mask' => $account['mask'], 'institution_name' => $request['institution_name']])->first();
-
-            if($existingRecord) {
-                LinkedAccount::find($existingRecord->id)->update(['access_token' => $accessToken]);
-            }else{
-                LinkedAccount::create([
-                    'access_token' => $accessToken,
-                    'institution_name' => $request['institution_name'],
-                    'account_name' => $account['name'],
-                    'account_mask' => $account['mask'],
-                    'user_id' => Auth::id()
-                ]);
-            }
+            $service->storeOrUpdate($account, $accessToken);
         }
 
         return redirect()->route('linkedAccount.edit');
@@ -73,11 +61,9 @@ class LinkedAccountController extends Controller
     /**
      * delete a linked account.
      */
-    public function destroy(int $id)
+    public function destroy(int $id, LinkedAccountService $service)
     {
-        $linkedAccount = Auth::user()->linkedAccounts()->where('id',$id)->delete();
-        Transaction::where('linked_account_id',$id)->delete();
-
+        $service->delete($id);
         return redirect()->route('linkedAccount.edit');
     }
 
